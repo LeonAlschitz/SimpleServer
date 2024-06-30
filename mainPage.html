@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+    <html lang="en">
+
+    
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <h1>Leon's webpage</h1>
+    </head>
+ 
+    <body>
+
+        <input type="text" id="userInput" placeholder="Enter some data"/>
+        
+
+        <pre id="response"></pre>
+        
+        <button onclick="makeGetRequest()">Make GET Request</button>
+
+        <div id="getDataContainer">
+
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', (event) => {
+
+                const apiUrl = 'http://localhost:3000';
+
+                const inputBox = document.getElementById('userInput');
+                const responseBox = document.getElementById('response');
+    
+                inputBox.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        makePostRequest(inputBox.value);
+                        inputBox.value = ''; // Clear input box
+                    }
+                });
+    
+                async function makeGetRequest() {
+                    try {
+                        const response = await fetch(`${apiUrl}/data`);
+                        const data = await response.json();
+                        responseBox.textContent = JSON.stringify(data, null, 2);
+    
+                        getDataContainer.textContent = JSON.stringify(data, null, 2);
+                    } catch (error) {
+                        responseBox.textContent = error.toString();
+                    }
+                }
+    
+                async function makePostRequest(userData) {
+                    try {
+                        const response = await fetch(`${apiUrl}/data`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ userInput: userData })
+                        });
+                        const data = await response.json();
+                        responseBox.textContent = JSON.stringify(data, null, 2);
+                    } catch (error) {
+                        responseBox.textContent = error.toString();
+                    }
+                }
+    
+                window.makeGetRequest = makeGetRequest;
+            });
+        </script>
+    </body>
+
+</html>
